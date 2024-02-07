@@ -7,6 +7,12 @@ class ProgressIter:
 	""" Implementatation of a progressbar
 
 	:param length: The length of the process.
+	:param bins: 	 The number of bins will be displayed.
+	:param bchr: 	 The basic character used to indicate that the progression is passed.
+	:param lchr: 	 The character used to open bins.
+	:param rchr: 	 The character used to close bins.
+	:param pchr:   The character used for progression indication.
+	:param empt: 	 The character used to indication that the progression not passed yet.
 	"""
 
 	def __init__(self,
@@ -84,13 +90,13 @@ class ProgressIter:
 
 		n_bins = math.floor(self._progress  * self._bins / self._length)
 		purcent = self.get_progress_purcent()
-		done = n_bins == self._bins
+		done = (n_bins == self._bins)
 		pchr = self._pchr if not done else self._bchr
 		# clear line and print the progress bar into terminal
 		print("\033[2K", end='\r')
 		print(
-			(f"[ {purcent:6.2f}% - "
-			 f"{str_rem} ] "
+			(f"[{purcent:6.2f}% - "
+			 f"{str_rem}] "
 			 f"{self._lchr}{self._bchr * n_bins}{pchr}"
 			 f"{self._empt*(self._bins - n_bins)}{self._rchr} "
 			 f"{rate:.2f} its/sec "
