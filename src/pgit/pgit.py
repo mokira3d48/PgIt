@@ -1,4 +1,3 @@
-import os
 import math
 import time
 
@@ -8,7 +7,7 @@ class ProgressIter:
 
 	:param length: The length of the process.
 	:param bins:   The number of bins will be displayed.
-	:param strf:   The string format of the progress bar.
+	:param barf:   The string format of the progress bar.
 	:param bchr:   The basic character used to indicate
 				   that the progression is passed.
 	:param lchr:   The character used to open bins.
@@ -19,7 +18,7 @@ class ProgressIter:
 
 	:type length: int,
 	:type bins: int,
-	:type strf: optional str,
+	:type barf: optional str,
 	:type bchr: str
 	:type lchr: str
 	:type rchr: str
@@ -30,7 +29,7 @@ class ProgressIter:
 	def __init__(self,
 				 length,
 				 bins = 20,
-				 strf = None,
+				 barf = None,
 				 bchr = '-',
 				 lchr = '[',
 				 rchr = ']',
@@ -40,7 +39,7 @@ class ProgressIter:
 
 		self._length = length
 		self._bins = bins
-		self._strf = strf if strf \
+		self._strf = barf if barf \
 			else ("[{purcent:6.2f}% - "
 				   "{time_rem}] "
 				   "{pbar} "
@@ -55,7 +54,8 @@ class ProgressIter:
 
 		self._progress = 0
 		self._starttime = 0
-		self._log = ''
+		self._data = {}
+		self.reset()
 
 	@property
 	def length(self):
@@ -74,7 +74,7 @@ class ProgressIter:
 		:rtype: str
 		"""
 		if not str_format:
-			str_format = "{days}:{hours:02d}:{mins:02d}:{sec:02d}:{millis:03d}"
+			str_format = "{days}:{hours:02d}:{mins:02d}:{secs:02d}:{millis:03d}"
 
 		sec = millis // 1000
 		millis = millis % 1000
@@ -102,6 +102,11 @@ class ProgressIter:
 		:rtype: float
 		"""
 		return self._progress * 100.0 / self._length
+
+	def _print_update(self):
+		pstring = self._strf.format(**self._data)
+		print("\033[2K", end='\r')
+		print(pstring, end=' ', flush=True)
 
 	def step(self, value):
 		"""Function to perform one step
@@ -137,20 +142,15 @@ class ProgressIter:
 		purcent = self.get_progress_purcent()
 		done = (n_bins == self._bins)
 		pchr = self._pchr if not done else self._bchr
-		# build progress bar string;
-		#   ("[{purcent:6.2f}% - {time_rem}] {pbar} {it_rate:.2f} its/sec
-		#   {logger}")
-		pstring = self._strf.format(
-			purcent=purcent,
-			time_rem=str_rem,
-			pbar=(f"{self._lchr}{self._bchr * n_bins}{pchr}"
-				  f"{self._empt*(self._bins - n_bins)}{self._rchr}"),
-			it_rate=rate,
-			logger=self._log,
+		self._data['purcent'] = purcent
+		self._data['time_rem'] = str_rem
+		self._data['pbar'] = (
+			f"{self._lchr}{self._bchr * n_bins}{pchr}"
+			f"{self._empt*(self._bins - n_bins)}{self._rchr}"
 		)
+		self._data['it_rate'] = rate
 		# clear line and print the progress bar into terminal
-		print("\033[2K", end='\r')
-		print(pstring, end=' ', flush=True)
+		self._print_update()
 
 	def get_duration(self):
 		""" Returns the duration of the progress in seconds """
@@ -162,7 +162,8 @@ class ProgressIter:
 		:param message: The message will be logged.
 		:type message: str
 		"""
-		self._log = f"{message}"
+		self._data['logger'] = f"{message}"
+		self._print_update()
 
 	def finalise(self, message: str):
 		""" Function to finalise the progress counting with a message
@@ -174,10 +175,14 @@ class ProgressIter:
 		print(message, flush=True)
 
 	def reset(self):
-		""" Function to reset the progress counter """
+		"""Function to reset the progress counter"""
 		self._progress = 0
 		self._starttime = 0
-		self._log = ''
+		self._data['logger'] = ''
+		self._data['purcent'] = 0.0
+		self._data['time_rem'] = ""
+		self._data['pbar'] = " "*self._bins
+		self._data['it_rate'] = 0
 
 
 def main():
@@ -186,11 +191,11 @@ def main():
 	time_format = "{mins:02d}:{secs:02d}"
 	progressbar = ProgressIter(
 		2000, 80,
-		strf=pbar_format,
+		barf=pbar_format,
 		pchr='#',
 		bchr='=',
 		empt='-',
-		time_format=time_format
+		time_format=time_format,
 	)
 	for i in range(2000):
 		progressbar.step(1)
@@ -210,5 +215,6 @@ def main():
 
 
 if __name__ == '__main__':
+	import os
 	main()
 	os.sys.exit(0)
