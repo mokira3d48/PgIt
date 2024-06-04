@@ -40,11 +40,13 @@ class ProgressIter:
 		self._length = length
 		self._bins = bins
 		self._strf = barf if barf \
-			else ("[{purcent:6.2f}% - "
-				   "{time_rem}] "
-				   "{pbar} "
-				   "{it_rate:.2f} its/sec "
-				   "{logger}")
+			else ("{logger}"
+				  " {pbar}"
+				  " {purcent:6.2f}% -"
+				  " {progress}/{n_iters}"
+				  " [{time_rem}"
+				  " {iter_rate:.2f} its/sec] "
+				   )
 		self._bchr = bchr
 		self._lchr = lchr
 		self._rchr = rchr
@@ -148,13 +150,10 @@ class ProgressIter:
 			f"{self._lchr}{self._bchr * n_bins}{pchr}"
 			f"{self._empt*(self._bins - n_bins)}{self._rchr}"
 		)
-		self._data['it_rate'] = rate
-		# clear line and print the progress bar into terminal
+		self._data['progress'] = self._progress
+		self._data['n_iters'] = self._length
+		self._data['iter_rate'] = rate
 		self._print_update()
-
-	def get_duration(self):
-		""" Returns the duration of the progress in seconds """
-		return time.time() - self._starttime
 
 	def log(self, message):
 		"""Function of log printing
@@ -182,7 +181,9 @@ class ProgressIter:
 		self._data['purcent'] = 0.0
 		self._data['time_rem'] = ""
 		self._data['pbar'] = " "*self._bins
-		self._data['it_rate'] = 0
+		self._data['progress'] = 0
+		self._data['n_iters'] = self._length
+		self._data['iter_rate'] = 0
 
 
 def main():
