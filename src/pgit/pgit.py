@@ -45,7 +45,7 @@ class ProgressIter:
 				  " {purcent:6.2f}% -"
 				  " {progress}/{n_iters}"
 				  " [{time_rem}"
-				  " {iter_rate:.2f} its/sec] "
+				  " {iter_rate:.2f}its/sec] "
 				   )
 		self._bchr = bchr
 		self._lchr = lchr
@@ -164,14 +164,15 @@ class ProgressIter:
 		self._data['logger'] = f"{message}"
 		self._print_update()
 
-	def finalise(self, message: str):
+	def finalise(self, message = None):
 		""" Function to finalise the progress counting with a message
 
 		:param message: The resume message.
+		:type message: str, optional
 		"""
 		# clear the progress bar, and print the message received by argument
 		print("\033[2K", end='\r')
-		print(message, flush=True)
+		print((message if message else self._data['logger']), flush=True)
 
 	def reset(self):
 		"""Function to reset the progress counter"""
