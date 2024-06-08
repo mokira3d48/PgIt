@@ -57,7 +57,7 @@ class ProgressIter:
 		self._progress = 0
 		self._starttime = 0
 		self._data = {}
-		self.reset()
+		self._make_reset()
 
 	@property
 	def length(self):
@@ -174,7 +174,7 @@ class ProgressIter:
 		print("\033[2K", end='\r')
 		print((message if message else self._data['logger']), flush=True)
 
-	def reset(self):
+	def _make_reset(self):
 		"""Function to reset the progress counter"""
 		self._progress = 0
 		self._starttime = 0
@@ -185,6 +185,9 @@ class ProgressIter:
 		self._data['progress'] = 0
 		self._data['n_iters'] = self._length
 		self._data['iter_rate'] = 0
+
+	def reset(self):
+		self._make_reset()
 
 
 def main():
