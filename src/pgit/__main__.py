@@ -1,4 +1,3 @@
-import os
 import time
 from pgit import ProgressIter
 
@@ -35,6 +34,9 @@ def main():
 
 if __name__ == '__main__':
 	import os
-	main()
-	os.sys.exit(0)
+	try:
+	    main()
+    	os.sys.exit(0)
+    except KeyboardInterrupt:
+        os.sys.exit(125)
 
