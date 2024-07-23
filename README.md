@@ -7,8 +7,15 @@
 <!-- ![](https://img.shields.io/badge/REST%20Framework-3.14.0-%23A30000) -->
 <!-- ![](https://img.shields.io/badge/Swagger-OpenAPI%202.0-%23aaaa00) -->
 
+## Installation
+Run the following command line to install this package into your virtual
+environment.
 
-## Usage
+```sh
+pip install "git+https://github.com/mokira3d48/pgit"
+```
+
+## Dev usage
 1. `sudo apt install cmake python3-venv` Install *Cmake* and *Virtual env*;
 2. `make venv` create a virtual env into directory named `env`;
 3. `ssource env/bin/activate` activate the virtual environment named `env`;
@@ -36,3 +43,4 @@ test:
 run:
 	python3 -m pgit
 ```
+
