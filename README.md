@@ -1,46 +1,38 @@
-# PGIT
-This package allows you to put a progress bar in your Python program.
+# Progress Iterator (PgIt)
+![](https://img.shields.io/badge/LICENSE-MIT-%2300557f)
+![](https://img.shields.io/badge/lastest-2024--07--23-success)
+![](https://img.shields.io/badge/contact-dr.mokira%40gmail.com-blueviolet)
 
-
-## Installation and Configuration
-
-```sh
-pip install https://github.com/mokira3d48/pgit
-```
+<!-- ![](https://img.shields.io/badge/Django-5.0-%2344B78B) -->
+<!-- ![](https://img.shields.io/badge/REST%20Framework-3.14.0-%23A30000) -->
+<!-- ![](https://img.shields.io/badge/Swagger-OpenAPI%202.0-%23aaaa00) -->
 
 
 ## Usage
-To use this package, you must import `ProgressIter` from `pgit` package. You instanciate with
-several arguments and call function `step()` in progress loop.
-
-```python
-import os
-from pgit import ProgressIter
-
-
-def main():
-	""" Main function """
-	progressbar = ProgressIter(2000, 80, pchr='#', bchr='=', empt='-')
-	for i in range(2000):
-		progressbar.step(1)
-		time.sleep(0.1)
-		progressbar.log("First step: " + str(i))
-
-	time.sleep(10)
-	progressbar.finalise("The current job is done.")
-	progressbar.reset()
-
-	for i in range(2000):
-		progressbar.step(1)
-		time.sleep(0.1)
-		progressbar.log("Second step: " + str(i))
-
-	progressbar.finalise("The current job is done.")
+1. `sudo apt install cmake python3-venv` Install *Cmake* and *Virtual env*;
+2. `make venv` create a virtual env into directory named `env`;
+3. `ssource env/bin/activate` activate the virtual environment named `env`;
+4. `make install` install the requirements of this package;
+5. `make dev` install the package in dev mode in virtual environment;
+6. `make test` run the unit test scripts located at `tests` directory;
+7. `mkae run` run script located at `src/pgit/__main__.py`.
 
 
-if __name__ == '__main__':
-	main()
-	os.sys.exit(0)
+### Makefile content
+
+```makefile
+venv:
+	python3 -m venv env
+
+install:
+	pip install -r requirements.txt
+
+dev:
+	pip install -e .
+
+test:
+	pytest tests  # Run the test cases;
+
+run:
+	python3 -m pgit
 ```
-
-![](./images/Screenshot.png)
