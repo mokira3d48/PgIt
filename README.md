@@ -3,44 +3,64 @@
 ![](https://img.shields.io/badge/lastest-2024--07--23-success)
 ![](https://img.shields.io/badge/contact-dr.mokira%40gmail.com-blueviolet)
 
-<!-- ![](https://img.shields.io/badge/Django-5.0-%2344B78B) -->
-<!-- ![](https://img.shields.io/badge/REST%20Framework-3.14.0-%23A30000) -->
-<!-- ![](https://img.shields.io/badge/Swagger-OpenAPI%202.0-%23aaaa00) -->
-
 ## Installation
-Run the following command line to install this package into your virtual
-environment.
+Just copy and past this module into your project source code.
 
-```sh
-pip install "git+https://github.com/mokira3d48/pgit"
+## Usage
+
+```python
+from pgit import PBM, ProgressBar
+
+
+def main():
+    """Main function"""
+    pbm = PBM(" | ")
+    pb1 = ProgressBar()
+    pb2 = ProgressBar()
+    pb1.name = "progress1"
+    pb2.name = "progress2"
+    pbm.append(pb2)
+    pbm.add(pb1)
+
+    pb1.length = 300
+    pb2.length = 5
+    pb1.bins = 100
+    pb2.bins = 5
+    pb2.bchr = '='
+    pb2.pchr = '>'
+    pb2.empt = '.'
+    pb2.lchr = '{'
+    pb2.rchr = '}'
+    pb2.format = "{logger} {progressbar} {percent}"
+    pb2.log_format("code: {k:05d} / {num}", k=0, num=pb1.length)
+
+    for i in range(2):
+        for j in range(pb1.length):
+            pb1.step(1)
+            if j % 2 == 0:
+                pb2.step(1)
+            pb1.log(f"index: {j}")
+            pb2.log(k=j)
+            sleep(0.05)
+            if pb2.full():
+                pb2.reset()
+
+        pbm.resume(
+            f"End of step {i} session in " + "{progress1_duration}.")
+        pbm.reset()
+
+    pbm.resume(
+        "End of all progress session"
+        " in {progress1_duration} - {progress2_duration}.")
+    pbm.reset()
+
+
+if __name__ == '__main__':
+    main()
 ```
 
-## Dev usage
-1. `sudo apt install cmake python3-venv` Install *Cmake* and *Virtual env*;
-2. `make venv` create a virtual env into directory named `env`;
-3. `ssource env/bin/activate` activate the virtual environment named `env`;
-4. `make install` install the requirements of this package;
-5. `make dev` install the package in dev mode in virtual environment;
-6. `make test` run the unit test scripts located at `tests` directory;
-7. `mkae run` run script located at `src/pgit/__main__.py`.
-
-
-### Makefile content
-
-```makefile
-venv:
-	python3 -m venv env
-
-install:
-	pip install -r requirements.txt
-
-dev:
-	pip install -e .
-
-test:
-	pytest tests  # Run the test cases;
-
-run:
-	python3 -m pgit
 ```
-
+End of step 0 session in 000:00:00:15.119.
+End of step 1 session in 000:00:00:15.124.
+End of all progress session in 000:00:00:15.124 - 000:00:00:00.000.
+```
